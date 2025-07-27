@@ -26,7 +26,7 @@ public class KafkaTopicConfig {
 
         // Use your actual email and App Password here
         mailSender.setUsername("robo49472@gmail.com");
-        mailSender.setPassword("fcxs svzn eref ezhz");
+        mailSender.setPassword("I_will_text_on_grp");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
