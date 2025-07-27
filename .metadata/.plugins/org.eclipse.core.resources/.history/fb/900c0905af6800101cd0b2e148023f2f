@@ -1,0 +1,26 @@
+# Service Name and Port
+spring.application.name=customer-service
+server.port=8081
+
+# Eureka Client Configuration
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+eureka.instance.hostname=localhost
+
+# Oracle Database Configuration - IMPORTANT: FILL IN YOUR DETAILS
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521/FREE
+spring.datasource.username=system
+spring.datasource.password=Joyboy774
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+spring.jpa.hibernate.ddl-auto=update
+
+# Email Configuration
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=robo49472@gmail.com
+spring.mail.password=eqcv eyyt vnjr crtx
+
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+# JMS Configuration (using the embedded in-memory broker)
+spring.artemis.mode=embedded

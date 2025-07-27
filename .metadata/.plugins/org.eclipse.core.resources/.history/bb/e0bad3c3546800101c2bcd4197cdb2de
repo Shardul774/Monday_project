@@ -1,0 +1,5 @@
+package com.banking.customer.service;
+
+public class EmailListener {
+
+}

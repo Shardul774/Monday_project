@@ -1,0 +1,16 @@
+package com.banking.customer.service;
+
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class EmailListener {
+
+    @JmsListener(destination = "email-queue")
+    public void receiveMessage(String message) {
+        // In a real application, you would use JavaMailSender to send an email.
+        // Here, we just print to the console to confirm receipt.
+        System.out.println("<< JMS MESSAGE RECEIVED >>: " + message);
+        System.out.println("Simulating sending registration confirmation email...");
+    }
+}

@@ -1,0 +1,53 @@
+package com.banking.uiservice.controller;
+
+import com.banking.uiservice.proxy.AccountClient;
+import com.banking.uiservice.proxy.CustomerClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@Controller
+public class UiController {
+
+    @Autowired
+    private CustomerClient customerClient;
+
+    @Autowired
+    private AccountClient accountClient; // ✅ Inject the new client
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model, @AuthenticationPrincipal UserDetails user) {
+        if (user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            model.addAttribute("username", user.getUsername());
+             try {
+                model.addAttribute("customers", customerClient.getAllCustomers());
+            } catch (Exception e) {
+                model.addAttribute("error", "Could not retrieve customer list: " + e.getMessage());
+            }
+            return "admin-dashboard";
+        }
+        model.addAttribute("username", user.getUsername());
+        return "user-dashboard";
+    }
+
+    // ✅ New method to show accounts for a customer
+    @GetMapping("/accounts/{customerId}")
+    public String viewAccounts(@PathVariable Long customerId, Model model) {
+        try {
+            model.addAttribute("accounts", accountClient.getAccountsByCustomerId(customerId));
+            model.addAttribute("customerId", customerId);
+        } catch (Exception e) {
+            model.addAttribute("error", "Could not retrieve account list: " + e.getMessage());
+        }
+        return "accounts-view";
+    }
+}

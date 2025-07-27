@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>KYC Status</title>
+    <style>body { font-family: sans-serif; }</style>
+</head>
+<body>
+    <h1>KYC Status for Customer #<span th:text="${customerId}"></span></h1>
+
+    <div th:if="${kycStatus == null}">
+        <p>No KYC document submitted yet.</p>
+    </div>
+
+    <div th:unless="${kycStatus == null}">
+        <p><b>Document Type:</b> <span th:text="${kycStatus.documentType}"></span></p>
+        <p><b>Document Number:</b> <span th:text="${kycStatus.documentNumber}"></span></p>
+        <p><b>Status:</b> <span th:text="${kycStatus.status}"></span></p>
+    </div>
+    <br/>
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

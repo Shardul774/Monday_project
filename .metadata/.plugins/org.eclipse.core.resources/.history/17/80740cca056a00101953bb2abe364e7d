@@ -1,0 +1,43 @@
+package com.banking.customer.service;
+
+import com.banking.customer.dao.CustomerRepository;
+import com.banking.customer.exception.ResourceNotFoundException;
+import com.banking.customer.model.Customer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class CustomerService {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+    }
+
+    public Customer registerCustomer(Customer customer) {
+        customer.setPassword("default_password");
+        customer.setRoles("ROLE_USER");
+        customer.setPhoneNumber("0000000000");
+        customer.setUsername(customer.getEmail());
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        // Send the new customer object to the 'emailTopic' in Kafka
+        kafkaTemplate.send("emailTopic", savedCustomer);
+        System.out.println("Sent customer registration message to Kafka topic 'emailTopic'");
+
+        return savedCustomer;
+    }
+}

@@ -1,0 +1,24 @@
+spring.application.name=api-gateway
+server.port=9000
+
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+
+# Route any request starting with /api/ to the appropriate microservice
+spring.cloud.gateway.routes[0].id=customer-service-route
+spring.cloud.gateway.routes[0].uri=lb://customer-service
+spring.cloud.gateway.routes[0].predicates[0]=Path=/api/customers/**
+
+# Add this new route for the account service
+spring.cloud.gateway.routes[1].id=account-service-route
+spring.cloud.gateway.routes[1].uri=lb://account-service
+spring.cloud.gateway.routes[1].predicates[0]=Path=/api/accounts/**
+
+# Add this new route for the kyc service
+spring.cloud.gateway.routes[2].id=kyc-service-route
+spring.cloud.gateway.routes[2].uri=lb://kyc-service
+spring.cloud.gateway.routes[2].predicates[0]=Path=/api/kyc/**
+
+# Add this new route for the transaction service
+spring.cloud.gateway.routes[3].id=transaction-service-route
+spring.cloud.gateway.routes[3].uri=lb://transaction-service
+spring.cloud.gateway.routes[3].predicates[0]=Path=/api/transactions/**

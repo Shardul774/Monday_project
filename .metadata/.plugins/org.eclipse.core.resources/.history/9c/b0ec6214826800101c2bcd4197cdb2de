@@ -1,0 +1,39 @@
+package com.banking.customer.service;
+
+import com.banking.customer.dao.TransactionRepository;
+import com.banking.customer.model.Transaction;
+import com.banking.customer.model.TransactionType;
+import com.banking.customer.proxy.AccountClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Service
+public class TransactionService {
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private AccountClient accountClient;
+
+    @Transactional
+    public Transaction createTransaction(Transaction transaction) {
+        transaction.setTimestamp(LocalDateTime.now());
+        
+        // Determine the amount to send to the account service
+        // Credits are positive, Debits are negative
+        BigDecimal amountToUpdate = transaction.getType() == TransactionType.CREDIT 
+            ? transaction.getAmount() 
+            : transaction.getAmount().negate();
+
+        // 1. Call the account-service to update the balance
+        accountClient.updateAccountBalance(transaction.getAccountId(), amountToUpdate);
+
+        // 2. Save the transaction record
+        return transactionRepository.save(transaction);
+    }
+}

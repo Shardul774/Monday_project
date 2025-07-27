@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Account Transactions</title>
+    <style>body { font-family: sans-serif; } table { border-collapse: collapse; } td, th { border: 1px solid #ddd; padding: 8px; }</style>
+</head>
+<body>
+    <h1>Transactions for Account #<span th:text="${accountId}"></span></h1>
+    <div th:if="${error}" style="color:red;" th:text="${error}"></div>
+
+    <table th:unless="${error}">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="tx : ${transactions}">
+                <td th:text="${tx.id}">TX100</td>
+                <td th:text="${tx.type}">CREDIT</td>
+                <td th:text="${tx.amount}">100.00</td>
+                <td th:text="${tx.timestamp}">2025-07-24T12:00:00</td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <a href="/dashboard">Back to Admin Dashboard</a>
+</body>
+</html>

@@ -1,0 +1,48 @@
+package com.banking.apigateway.controller;
+
+import com.banking.apigateway.proxy.CustomerClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import reactor.core.scheduler.Schedulers;
+import java.util.List;
+
+@Controller
+public class UiController {
+    
+    private final CustomerClient customerClient;
+    
+    @Autowired
+    public UiController(CustomerClient customerClient) {
+        this.customerClient = customerClient;
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/user-dashboard";
+    }
+    
+    @GetMapping("/user-dashboard")
+    public String userDashboard(Model model, @AuthenticationPrincipal UserDetails user) {
+        model.addAttribute("username", user.getUsername());
+        return "user-dashboard";
+    }
+
+    @GetMapping("/admin-dashboard")
+    public String adminDashboard(Model model, @AuthenticationPrincipal UserDetails user) {
+        model.addAttribute("username", user.getUsername());
+        try {
+            List<Object> customers = customerClient.getAllCustomers()
+                                                    .collectList()
+                                                    .subscribeOn(Schedulers.boundedElastic())
+                                                    .block();
+            model.addAttribute("customers", customers);
+        } catch (Exception e) {
+            model.addAttribute("error", "Could not retrieve customer list: " + e.getMessage());
+        }
+        return "admin-dashboard";
+    }
+}

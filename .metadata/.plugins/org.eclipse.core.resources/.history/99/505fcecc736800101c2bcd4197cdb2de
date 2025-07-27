@@ -1,0 +1,20 @@
+# Service Name and Port
+spring.application.name=account-service
+server.port=8082
+
+# Eureka Client Configuration
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+eureka.instance.hostname=localhost
+
+# Oracle Database Configuration - uses the same database
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521/FREE
+spring.datasource.username=SYSTEM
+spring.datasource.password=Joyboy774
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+spring.jpa.hibernate.ddl-auto=update
+
+# Add this new route for the account service
+spring.cloud.gateway.routes[1].id=account-service-route
+spring.cloud.gateway.routes[1].uri=lb://account-service
+spring.cloud.gateway.routes[1].predicates[0]=Path=/api/accounts/**

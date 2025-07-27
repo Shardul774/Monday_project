@@ -1,0 +1,38 @@
+package com.banking.customer.controller;
+
+import com.banking.customer.model.Customer;
+import com.banking.customer.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/customers")
+public class CustomerController {
+
+    private final CustomerService customerService;
+
+    @Autowired
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+    
+    @GetMapping
+    public List<Customer> getAllCustomers() {
+        return customerService.getAllCustomers();
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+        Customer customer = customerService.getCustomerById(id);
+        return ResponseEntity.ok(customer);
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) {
+        Customer newCustomer = customerService.registerCustomer(customer);
+        return new ResponseEntity<>(newCustomer, HttpStatus.CREATED);
+    }
+}

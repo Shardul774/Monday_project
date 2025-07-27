@@ -1,0 +1,55 @@
+package com.banking.apigateway.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+
+@Configuration
+@EnableWebFluxSecurity
+public class SecurityConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public MapReactiveUserDetailsService userDetailsService(PasswordEncoder encoder) {
+        UserDetails user = User.builder()
+            .username("user")
+            .password(encoder.encode("password"))
+            .roles("USER")
+            .build();
+
+        UserDetails admin = User.builder()
+            .username("admin")
+            .password(encoder.encode("password"))
+            .roles("ADMIN", "USER")
+            .build();
+            
+        return new MapReactiveUserDetailsService(user, admin);
+    }
+
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        http
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .authorizeExchange(exchange -> exchange
+                .pathMatchers("/api/customers/register").permitAll() 
+                .pathMatchers("/admin-dashboard", "/api/customers").hasRole("ADMIN")
+                .pathMatchers("/user-dashboard", "/").hasRole("USER")
+                .anyExchange().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults()); 
+            
+        return http.build();
+    }
+}

@@ -1,0 +1,14 @@
+package com.banking.uiservice.proxy;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.List;
+
+// ✅ Add the contextId
+@FeignClient(name = "api-gateway", contextId = "accountClient")
+public interface AccountClient {
+	
+    @GetMapping("/api/accounts/customer/{customerId}")
+    List<Object> getAccountsByCustomerId(@PathVariable("customerId") Long customerId);
+}

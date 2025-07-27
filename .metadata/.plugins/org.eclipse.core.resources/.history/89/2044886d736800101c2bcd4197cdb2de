@@ -1,0 +1,27 @@
+package com.banking.account.service;
+
+import com.banking.customer.dao.AccountRepository;
+import com.banking.customer.model.Account;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class AccountService {
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    public Account createAccount(Account account) {
+        // In a real app, generate a more structured account number
+        account.setAccountNumber(UUID.randomUUID().toString());
+        account.setBalance(BigDecimal.ZERO); // New accounts start with a zero balance
+        return accountRepository.save(account);
+    }
+
+    public List<Account> getAccountsByCustomerId(Long customerId) {
+        return accountRepository.findByCustomerId(customerId);
+    }
+}

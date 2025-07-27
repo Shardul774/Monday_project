@@ -1,0 +1,5 @@
+package com.banking.uiservice.controller;
+
+public class UiController {
+
+}

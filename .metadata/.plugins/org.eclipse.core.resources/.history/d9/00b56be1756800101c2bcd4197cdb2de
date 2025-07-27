@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"><title>Admin Dashboard</title>
+    <style>body { font-family: sans-serif; } table { border-collapse: collapse; } td, th { border: 1px solid #ddd; padding: 8px; }</style>
+</head>
+<body>
+    <h1>Welcome, Admin <span th:text="${username}"></span>!</h1>
+    <p>This is the admin dashboard. You have the role: <span sec:authentication="principal.authorities"></span></p>
+
+    <h3>All Registered Customers</h3>
+    <div th:if="${error}" style="color:red;" th:text="${error}"></div>
+    <table th:unless="${error}">
+        <thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th></tr></thead>
+        <tbody>
+            <tr th:each="customer : ${customers}">
+                <td th:text="${customer['id']}">1</td>
+                <td th:text="${customer['firstName']}">John</td>
+                <td th:text="${customer['lastName']}">Doe</td>
+                <td th:text="${customer['email']}">john@example.com</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

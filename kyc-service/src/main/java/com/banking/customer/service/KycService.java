@@ -1,0 +1,26 @@
+package com.banking.customer.service;
+
+import com.banking.customer.dao.KycRepository;
+import com.banking.customer.model.KycDocument;
+import com.banking.customer.model.KycStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional; // ✅ Add this import
+
+@Service
+public class KycService {
+
+    @Autowired
+    private KycRepository kycRepository;
+
+    public KycDocument submitDocument(KycDocument kycDocument) {
+        // New documents are always pending verification
+        kycDocument.setStatus(KycStatus.PENDING);
+        return kycRepository.save(kycDocument);
+    }
+
+    public Optional<KycDocument> getKycStatusByCustomerId(Long customerId) {
+        return kycRepository.findByCustomerId(customerId);
+    }
+}

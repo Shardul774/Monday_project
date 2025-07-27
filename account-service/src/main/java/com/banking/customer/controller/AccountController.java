@@ -1,0 +1,38 @@
+package com.banking.customer.controller;
+
+import com.banking.customer.model.Account;
+import com.banking.customer.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.math.BigDecimal;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/accounts") // ✅ This line is the critical part
+public class AccountController {
+
+    @Autowired
+    private AccountService accountService;
+
+    // Create a new account for a customer
+    @PostMapping
+    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        Account newAccount = accountService.createAccount(account);
+        return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
+    }
+
+    // Get all accounts for a specific customer
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<Account>> getAccountsByCustomerId(@PathVariable Long customerId) {
+        List<Account> accounts = accountService.getAccountsByCustomerId(customerId);
+        return ResponseEntity.ok(accounts);
+    }
+
+    // Update an account's balance
+    @PutMapping("/{accountId}/balance")
+    public ResponseEntity<Account> updateAccountBalance(@PathVariable Long accountId, @RequestBody BigDecimal amount) {
+        return ResponseEntity.ok(accountService.updateBalance(accountId, amount));
+    }
+}

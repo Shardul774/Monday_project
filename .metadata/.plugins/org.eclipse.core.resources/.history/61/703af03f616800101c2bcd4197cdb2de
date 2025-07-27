@@ -1,0 +1,12 @@
+package com.banking.apigateway.proxy;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import reactor.core.publisher.Flux;
+
+@FeignClient(name = "customer-service")
+public interface CustomerClient {
+
+    @GetMapping("/api/customers")
+    Flux<Object> getAllCustomers();
+}

@@ -1,0 +1,14 @@
+package com.banking.uiservice.proxy;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import java.util.List;
+
+// This proxy now calls the API Gateway, not the customer-service directly
+@FeignClient(name = "api-gateway")
+public interface CustomerClient {
+    
+    // This path is routed by the gateway to the customer-service
+    @GetMapping("/api/customers")
+    List<Object> getAllCustomers();
+}

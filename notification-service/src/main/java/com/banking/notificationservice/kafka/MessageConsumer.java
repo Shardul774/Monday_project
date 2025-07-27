@@ -1,0 +1,43 @@
+package com.banking.notificationservice.kafka;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+import com.banking.customer.model.Customer;
+
+@Service
+public class MessageConsumer {
+
+    @Autowired
+    private JavaMailSender mailSender;
+    
+    @KafkaListener(topics = "emailTopic", groupId = "myGroup")
+    public void consumeCustomerObject(Customer customer) {
+        System.out.println("Kafka message received for: " + customer.getEmail());
+
+        String to = customer.getEmail();
+        String subject = "New Customer Created Notification";
+        
+        String emailMessage = "Dear " + customer.getFirstName() + ",\n\n"
+                            + "Your registraion was successfully completed.\n"
+                            + "Your Customer ID is: " + customer.getId() + "\n\n"
+                            + "Regards,\n"
+                            + "The Banking Team";
+        
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(to);
+        msg.setSubject(subject);
+        msg.setText(emailMessage);
+        msg.setFrom("noreply@yourbank.com"); // Your desired 'from' address
+        
+        try {
+            mailSender.send(msg);
+            System.out.println("Email sent successfully to " + to);
+        } catch (Exception e) {
+            System.err.println("Error sending email: " + e.getMessage());
+        }
+    }
+}

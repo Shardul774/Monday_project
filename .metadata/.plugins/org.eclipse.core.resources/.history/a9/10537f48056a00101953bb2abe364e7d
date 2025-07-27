@@ -1,0 +1,33 @@
+package com.banking.notificationservice.kafka;
+
+import com.banking.customer.model.Customer; // Note the package name
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageConsumer {
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @KafkaListener(topics = "emailTopic", groupId = "myGroup")
+    public void consumeAndSendEmail(Customer customer) {
+        System.out.println("Kafka message received for customer: " + customer.getEmail());
+        
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(customer.getEmail());
+        msg.setSubject("Welcome to Our Bank!");
+        msg.setText("Dear " + customer.getFirstName() + ",\n\nThank you for registering.");
+        msg.setFrom("noreply@yourbank.com");
+
+        try {
+            mailSender.send(msg);
+            System.out.println("Registration email sent successfully to " + customer.getEmail());
+        } catch (Exception e) {
+            System.err.println("Error sending email: " + e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,9 @@
+package com.banking.customer.model;
+
+public class Account {
+    private Long id;
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+}

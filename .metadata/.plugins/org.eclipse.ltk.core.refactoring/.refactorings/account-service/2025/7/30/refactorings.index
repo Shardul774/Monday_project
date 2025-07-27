@@ -1,0 +1,10 @@
+1753349809542	Rename type 'CustomerServiceApplication'
+1753349862429	Rename package 'com.banking.customer.model'
+1753350471841	Rename package 'com.banking.customer.dao'
+1753350526668	Rename package 'com.banking.customer.service'
+1753350653927	Delete element
+1753350760737	Rename package 'com.banking.account.model'
+1753350804530	Rename package 'com.banking.account.dao'
+1753350846902	Rename package 'com.banking.account.service'
+1753350897563	Delete element
+1753353449673	Copy package

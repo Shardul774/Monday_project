@@ -1,0 +1,39 @@
+package com.banking.notificationservice.config;
+
+import java.util.Properties;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+@Configuration
+public class KafkaTopicConfig {
+
+    @Bean
+    public NewTopic configureTopic() {
+        return TopicBuilder
+                .name("emailTopic")
+                .build();
+    }
+    
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+
+        // Use your actual email and App Password here
+        mailSender.setUsername("atharvasankhe123@gmail.com");
+        mailSender.setPassword("fcxs svzn eref ezhz");
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true"); // Helpful for debugging
+
+        return mailSender;
+    }
+}
